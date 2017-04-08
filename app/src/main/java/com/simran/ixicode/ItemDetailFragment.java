@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.simran.ixicode.dummy.DummyContent;
+import com.simran.ixicode.dummy.PlaceContent;
 import com.simran.ixicode.models.Place;
 
 /**
@@ -40,17 +41,18 @@ public class ItemDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.i("simran",""+getArguments());
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+
 
             Activity activity = this.getActivity();
+            mItem = (Place) activity.getIntent().getSerializableExtra(ARG_ITEM_ID);
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.id);
+                appBarLayout.setTitle(mItem.getName());
             }
         }
     }
@@ -62,7 +64,7 @@ public class ItemDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem.details);
+            ((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem.getDescription());
         }
 
         return rootView;

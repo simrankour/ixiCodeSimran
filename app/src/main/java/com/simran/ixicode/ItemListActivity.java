@@ -2,13 +2,14 @@ package com.simran.ixicode;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +17,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
-import com.simran.ixicode.dummy.DummyContent;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.simran.ixicode.models.Place;
 import com.simran.ixicode.utility.AppConstant;
-import com.simran.ixicode.utility.AppUtility;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,10 +49,10 @@ public class ItemListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
 
-         posts = (ArrayList<Place>) getIntent().getSerializableExtra(AppConstant.PLACE_LIST);
-
-        Log.i("ListActivity", posts.size() + " list loaded.");
-
+        posts = (ArrayList<Place>) getIntent().getSerializableExtra(AppConstant.PLACE_LIST);
+        if (posts != null) {
+            Log.i("ListActivity", posts.size() + " list loaded.");
+        }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
@@ -98,13 +100,22 @@ public class ItemListActivity extends AppCompatActivity {
         }
 
 
-
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
             holder.mItem = mValues.get(position);
             holder.mIdView.setText(mValues.get(position).getName());
-//            holder.mContentView.setImageURI(mValues.get(position).getKeyImageUrl());
-//            AppUtility.setBackGroundImage(mValues.get(position).getKeyImageUrl(),holder.mContentView, R.drawable.ic_menu_gallery, getApplicationContext());
+
+            Glide
+                    .with(getApplicationContext())
+                    .load(mValues.get(position).getKeyImageUrl())
+                    .asBitmap()
+                    .into(new SimpleTarget<Bitmap>(100,100) {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                            holder.mContentView.setImageBitmap(resource); // Possibly runOnUiThread()
+                        }
+                    });
+
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -119,7 +130,7 @@ public class ItemListActivity extends AppCompatActivity {
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, ItemDetailActivity.class);
-                        intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, holder.mItem.getId());
+                        intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, (Serializable)posts.get(position));
 
                         context.startActivity(intent);
                     }
