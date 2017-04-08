@@ -46,5 +46,14 @@
         sha1="b9cd8fc6bd15cb915735d34535db30ece0c44603">
         <dex dex="/media/Simranjit/ad28c441-af57-436f-b20a-26ea5128fc5b/AndroidWorkspace/IxiCode/app/build/intermediates/pre-dexed/debug/constraint-layout-solver-1.0.2_aee846112aeb0511e0fd69454b2c542bb09921a4.jar" />
     </item>
+    <item
+        is-multidex="false"
+        jar="/home/ttnd/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.6.2/f1bc476cc167b18e66c297df599b2377131a8947/gson-2.6.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="f1bc476cc167b18e66c297df599b2377131a8947">
+        <dex dex="/media/Simranjit/ad28c441-af57-436f-b20a-26ea5128fc5b/AndroidWorkspace/IxiCode/app/build/intermediates/pre-dexed/debug/gson-2.6.2_036cdfaaac650b8f2d84cf4959b075efa499ce1b.jar" />
+    </item>
 
 </items>
