@@ -8,19 +8,14 @@ import java.util.List;
  * Created by Simranjit Kour on 8/4/17.
  */
 public class Post {
-
     @SerializedName("id")
-    public long ID;
-    public String title;
-    public String author;
-    public String url;
+    long ID;
+
     @SerializedName("date")
-    public Date dateCreated;
-    public String body;
+    Date dateCreated;
 
-    public List<Tag> tags;
-
-    public Post() {
-
-    }
+    String title;
+    String author;
+    String url;
+    String body;
 }

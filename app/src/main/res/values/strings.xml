@@ -6,4 +6,7 @@
 
     <string name="action_settings">Settings</string>
     <string name="message_network_not_available">No Network Available.</string>
+    <string name="meassge_source">Source</string>
+    <string name="meassge_desination">Destination</string>
+    <string name="title_search">SEARCH</string>
 </resources>

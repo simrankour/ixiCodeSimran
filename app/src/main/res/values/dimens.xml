@@ -13,4 +13,6 @@
     <dimen name="font_size_extra_large">22sp</dimen>
 
     <dimen name="nav_header_text_margin_left">16dp</dimen>
+    <dimen name="margin_default">5dp</dimen>
+    <dimen name="padding_auto_complete">5dp</dimen>
 </resources>

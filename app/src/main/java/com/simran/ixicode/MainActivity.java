@@ -3,21 +3,33 @@ package com.simran.ixicode;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.simran.ixicode.adapter.CityAutoCompleteAdapter;
+import com.simran.ixicode.customview.DelayAutoCompleteTextView;
+import com.simran.ixicode.models.City;
+import com.simran.ixicode.models.CityDetails;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -33,15 +45,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import NetworkingLib.HttpUtility;
-import NetworkingLib.models.HTTPRequest;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
     private static final String TAG = "PostsActivity";
-    private List<Post> posts;
+    private static final int THRESHOLD = 2;
+    private List<CityDetails> posts;
+
+    //    private static final String ENDPOINT = "https://kylewbanks.com/rest/posts.json";
+    private String ENDPOINT = "http://build2.ixigo.com/action/content/zeus/autocomplete?searchFor=tpAutoComplete&neCategories=City&query=indi";
+    private RequestQueue requestQueue;
+    private Gson gson;
+
+    private DelayAutoCompleteTextView sourceCity;
+    private DelayAutoCompleteTextView destCity;
+    private String cityId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,13 +87,82 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        PostFetcher fetcher = new PostFetcher();
-        fetcher.execute();
+//        GsonBuilder gsonBuilder = new GsonBuilder();
+//        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
+//        gson = gsonBuilder.create();
+//
+//        requestQueue = Volley.newRequestQueue(getApplicationContext());
+//        fetchPosts();
 
-//        HTTPRequest httpRequest = new HTTPRequest();
-//        httpRequest.setRequestURL("http://build2.ixigo.com/action/content/zeus/autocomplete?searchFor=tpAutoComplete&neCategories=City&query=de");
-//        HttpUtility.doGet(getApplicationContext(),httpRequest);
+        sourceCity = (DelayAutoCompleteTextView) findViewById(R.id.et_city_title);
+        sourceCity.setThreshold(THRESHOLD);
+        sourceCity.setAdapter(new CityAutoCompleteAdapter(this)); // 'this' is Activity instance
+        sourceCity.setLoadingIndicator(
+                (android.widget.ProgressBar) findViewById(R.id.pb_loading_indicator));
+        sourceCity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                City city = (City) adapterView.getItemAtPosition(position);
+                sourceCity.setText(city.getText());
+            }
+        });
+
+
+        destCity = (DelayAutoCompleteTextView) findViewById(R.id.et_city_title1);
+        destCity.setThreshold(THRESHOLD);
+        destCity.setAdapter(new CityAutoCompleteAdapter(this)); // 'this' is Activity instance
+        destCity.setLoadingIndicator(
+                (android.widget.ProgressBar) findViewById(R.id.pb_loading_indicator1));
+        destCity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                City city = (City) adapterView.getItemAtPosition(position);
+                destCity.setText(city.getText());
+                cityId = city.getId();
+            }
+        });
+
+        Button buttonSearch = (Button) findViewById(R.id.btnSearch);
+
     }
+
+    public void onSearchButtonClick(View view){
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
+        gson = gsonBuilder.create();
+
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
+        fetchPosts();
+    }
+
+    private void fetchPosts() {
+        ENDPOINT ="http://build2.ixigo.com/api/v3/namedentities/city/"+cityId+"/categories?apiKey=ixicode!2$&type=Hotel";
+        StringRequest request = new StringRequest(Request.Method.GET, ENDPOINT, onPostsLoaded, onPostsError);
+
+        requestQueue.add(request);
+    }
+
+    private final Response.Listener<String> onPostsLoaded = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            Log.i("PostActivity", response);
+
+            List<City> posts = Arrays.asList(gson.fromJson(response, City[].class));
+
+            Log.i("PostActivity", posts.size() + " posts loaded.");
+            for (City post : posts) {
+                Log.i("PostActivity", post.getText() + ": " + post.getUrl());
+            }
+        }
+    };
+
+    private final Response.ErrorListener onPostsError = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Log.e("PostActivity", error.toString());
+        }
+    };
 
     @Override
     public void onBackPressed() {
@@ -134,13 +222,13 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void handlePostsList(List<Post> posts) {
+    private void handlePostsList(List<CityDetails> posts) {
         this.posts = posts;
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                for(Post post : MainActivity.this.posts) {
+                for (CityDetails post : MainActivity.this.posts) {
                     Toast.makeText(MainActivity.this, post.title, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -159,50 +247,60 @@ public class MainActivity extends AppCompatActivity
 
     private class PostFetcher extends AsyncTask<Void, Void, String> {
         private static final String TAG = "PostFetcher";
-        public static final String SERVER_URL = "http://kylewbanks.com/rest/posts.json";
+        //        public static final String SERVER_URL = "http://kylewbanks.com/rest/posts.json";
+        public static final String SERVER_URL = "http://build2.ixigo.com/action/content/zeus/autocomplete?searchFor=tpAutoComplete&neCategories=City&query=de";
 
         @Override
         protected String doInBackground(Void... params) {
             try {
-//                //Create an HTTP client
-//                HttpClient client = new DefaultHttpClient();
-//                HttpPost post = new HttpPost(SERVER_URL);
-//
-//                //Perform the request and check the status code
-//                HttpResponse response = client.execute(post);
-//                StatusLine statusLine = response.getStatusLine();
-//                if(statusLine.getStatusCode() == 200) {
-//                    HttpEntity entity = response.getEntity();
-//                    InputStream content = entity.getContent();
-//
-//                    try {
-//                        //Read the server response and attempt to parse it as JSON
-//                        Reader reader = new InputStreamReader(content);
-//
-//                        GsonBuilder gsonBuilder = new GsonBuilder();
-//                        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
-//                        Gson gson = gsonBuilder.create();
-//                        List<Post> posts = new ArrayList<Post>();
-//                        posts = Arrays.asList(gson.fromJson(reader, Post[].class));
-//                        content.close();
-//
-//                        handlePostsList(posts);
-//                    } catch (Exception ex) {
-//                        Log.e(TAG, "Failed to parse JSON due to: " + ex);
-//                        failedLoadingPosts();
-//                    }
-//                } else {
-//                    Log.e(TAG, "Server responded with status code: " + statusLine.getStatusCode());
-//                    failedLoadingPosts();
-//                }
-                HTTPRequest httpRequest = new HTTPRequest();
-                httpRequest.setRequestURL("http://build2.ixigo.com/action/content/zeus/autocomplete?searchFor=tpAutoComplete&neCategories=City&query=de");
-                HttpUtility.doGet(getApplicationContext(),httpRequest);
-            } catch(Exception ex) {
+                //Create an HTTP client
+                HttpClient client = new DefaultHttpClient();
+                HttpPost post = new HttpPost(SERVER_URL);
+
+                //Perform the request and check the status code
+                HttpResponse response = client.execute(post);
+                Log.e("simran", "simran=== " + response.getEntity().getContent());
+                StatusLine statusLine = response.getStatusLine();
+                if (statusLine.getStatusCode() == 200) {
+                    HttpEntity entity = response.getEntity();
+                    InputStream content = entity.getContent();
+
+                    try {
+                        //Read the server response and attempt to parse it as JSON
+                        Reader reader = new InputStreamReader(content);
+
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
+                        Gson gson = gsonBuilder.create();
+                        List<CityDetails> posts = new ArrayList<CityDetails>();
+                        posts = Arrays.asList(gson.fromJson(reader, CityDetails[].class));
+                        content.close();
+
+                        handlePostsList(posts);
+                    } catch (Exception ex) {
+                        Log.e(TAG, "Failed to parse JSON due to: " + ex);
+                        failedLoadingPosts();
+                    }
+                } else {
+                    Log.e(TAG, "Server responded with status code: " + statusLine.getStatusCode());
+                    failedLoadingPosts();
+                }
+
+
+//                HTTPRequest httpRequest = new HTTPRequest();
+////                httpRequest.setBaseModel((BaseModel) new CityDetails());
+//                httpRequest.setRequestURL("http://build2.ixigo.com/action/content/zeus/autocomplete?searchFor=tpAutoComplete&neCategories=City&query=de");
+//                HttpUtility.doGet(getApplicationContext(),httpRequest);
+
+
+            } catch (Exception ex) {
                 Log.e(TAG, "Failed to send HTTP POST request due to: " + ex);
                 failedLoadingPosts();
             }
             return null;
         }
     }
+
+
+
 }

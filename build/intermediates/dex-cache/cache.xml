@@ -55,5 +55,14 @@
         sha1="f1bc476cc167b18e66c297df599b2377131a8947">
         <dex dex="/media/Simranjit/ad28c441-af57-436f-b20a-26ea5128fc5b/AndroidWorkspace/IxiCode/app/build/intermediates/pre-dexed/debug/gson-2.6.2_036cdfaaac650b8f2d84cf4959b075efa499ce1b.jar" />
     </item>
+    <item
+        is-multidex="false"
+        jar="/home/ttnd/.android/build-cache/05d70b5cc8510146b15632505c215daea26ba64e/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="2cd4b982617e544728de0782d718a58ce1b06e3f">
+        <dex dex="/media/Simranjit/ad28c441-af57-436f-b20a-26ea5128fc5b/AndroidWorkspace/IxiCode/app/build/intermediates/pre-dexed/debug/classes_6863f2398091504ff88c1f5edd0990b08455f727.jar" />
+    </item>
 
 </items>

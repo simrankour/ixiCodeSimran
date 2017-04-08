@@ -136,6 +136,7 @@ public class HttpUtility {
                     InputStream in = entity.getContent();
                     String result = readStream(in);
                     Log.i("simran","simran ====="+result);
+                    Log.i("simran","hello"+getBaseModel(result, httpRequest));
                     mResponse.setResponseString(result);
                     mResponse.setBaseModel(getBaseModel(result, httpRequest));
                 } else {
