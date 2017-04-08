@@ -9,7 +9,7 @@ public class City {
     private String url;
     private String ct;
     private String address;
-    private String id;
+    private String _id;
     private String state;
     private String country;
 
@@ -49,11 +49,11 @@ public class City {
     }
 
     public String getId() {
-        return id;
+        return _id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setId(String _id) {
+        this._id = _id;
     }
 
     public String getState() {

@@ -127,7 +127,7 @@ public class CityAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
             Log.i("PostActivity", posts.size() + " posts loaded.");
             for (City post : posts) {
-                Log.i("PostActivity", post.getText() + ": " + post.getUrl());
+                Log.i("PostActivity", post.getText() + ": " + post.getId());
             }
         }
     };

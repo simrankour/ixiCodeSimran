@@ -1,12 +1,18 @@
 package com.simran.ixicode.utility;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 
 /**
  * Created by Simranjit Kour on 8/4/17.
@@ -49,6 +55,18 @@ public class AppUtility {
     public static void printMessage(String msg) {
         if (AppConstant.DEBUG && msg != null && !msg.equalsIgnoreCase("")) {
             System.out.println(msg);
+        }
+    }
+
+    public static void setBackGroundImage(String imageUrl, ImageView imageView, int placeHolder, Context context) {
+        if (!TextUtils.isEmpty(imageUrl)) {
+            if (context instanceof Activity) {
+                Glide.with((Activity) context).load(imageUrl).placeholder(placeHolder).error(placeHolder).into(imageView);
+            } else {
+                Glide.with((Activity) context).load(imageUrl).placeholder(placeHolder).error(placeHolder).into(imageView);
+            }
+        } else {
+            Log.e("Error", "Image URL cant be empty");
         }
     }
 

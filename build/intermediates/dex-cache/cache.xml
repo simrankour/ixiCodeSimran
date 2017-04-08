@@ -48,6 +48,15 @@
     </item>
     <item
         is-multidex="false"
+        jar="/media/Simranjit/ad28c441-af57-436f-b20a-26ea5128fc5b/AndroidWorkspace/IxiCode/app/libs/glide-3.7.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="9e9eeaf9948ee4d6c3ab354e8dc14368f16994a4">
+        <dex dex="/media/Simranjit/ad28c441-af57-436f-b20a-26ea5128fc5b/AndroidWorkspace/IxiCode/app/build/intermediates/pre-dexed/debug/glide-3.7.0_8ef7d7e162430a692d08e7723b52f1ebd2b12b3d.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="/home/ttnd/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.6.2/f1bc476cc167b18e66c297df599b2377131a8947/gson-2.6.2.jar"
         jumboMode="false"
         optimize="true"

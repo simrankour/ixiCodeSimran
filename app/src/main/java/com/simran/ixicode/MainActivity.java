@@ -1,5 +1,6 @@
 package com.simran.ixicode;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -30,6 +33,8 @@ import com.simran.ixicode.adapter.CityAutoCompleteAdapter;
 import com.simran.ixicode.customview.DelayAutoCompleteTextView;
 import com.simran.ixicode.models.City;
 import com.simran.ixicode.models.CityDetails;
+import com.simran.ixicode.models.Place;
+import com.simran.ixicode.utility.AppConstant;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -37,10 +42,13 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,7 +68,8 @@ public class MainActivity extends AppCompatActivity
 
     private DelayAutoCompleteTextView sourceCity;
     private DelayAutoCompleteTextView destCity;
-    private String cityId;
+    private String cityId = "503b2a98e4b032e338f14f01";
+    private String searchCriteria = "Places To Visit";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,12 +130,14 @@ public class MainActivity extends AppCompatActivity
                 cityId = city.getId();
             }
         });
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radio_group);
+        radioGroup.check(R.id.radio_placetovisit);
 
         Button buttonSearch = (Button) findViewById(R.id.btnSearch);
 
     }
 
-    public void onSearchButtonClick(View view){
+    public void onSearchButtonClick(View view) {
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("M/d/yy hh:mm a");
@@ -134,12 +145,35 @@ public class MainActivity extends AppCompatActivity
 
         requestQueue = Volley.newRequestQueue(getApplicationContext());
         fetchPosts();
+
+
+    }
+
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch (view.getId()) {
+            case R.id.radio_placetovisit:
+                if (checked)
+                    searchCriteria = "Places To Visit";
+                break;
+            case R.id.radio_thingstodo:
+                if (checked)
+                    searchCriteria = "Things To Do";
+                break;
+            case R.id.radio_hotel:
+                if (checked)
+                    searchCriteria = "Hotel";
+                break;
+        }
     }
 
     private void fetchPosts() {
-        ENDPOINT ="http://build2.ixigo.com/api/v3/namedentities/city/"+cityId+"/categories?apiKey=ixicode!2$&type=Hotel";
+        String type = searchCriteria.replaceAll(" ", "+");
+        ENDPOINT = "http://build2.ixigo.com/api/v3/namedentities/city/" + cityId + "/categories?apiKey=ixicode!2$&type="+type+"&limit=5";
         StringRequest request = new StringRequest(Request.Method.GET, ENDPOINT, onPostsLoaded, onPostsError);
-
         requestQueue.add(request);
     }
 
@@ -147,13 +181,26 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onResponse(String response) {
             Log.i("PostActivity", response);
+            JSONObject json = null;
+            try {
+                json = new JSONObject(response);
+                JSONObject json_LL = json.getJSONObject("data");
+                String str_value = json_LL.getString("Places To Visit");
+                Log.i("Simran", "" + str_value);
 
-            List<City> posts = Arrays.asList(gson.fromJson(response, City[].class));
+                List<Place> posts = Arrays.asList(gson.fromJson(str_value, Place[].class));
 
-            Log.i("PostActivity", posts.size() + " posts loaded.");
-            for (City post : posts) {
-                Log.i("PostActivity", post.getText() + ": " + post.getUrl());
+                Log.i("PostActivity", posts.size() + " posts loaded.");
+                for (Place post : posts) {
+                    Log.i("PostActivity", post.getName() + ": " + post.getId());
+                }
+                Intent intent = new Intent(getApplicationContext(), ItemListActivity.class);
+                intent.putExtra(AppConstant.PLACE_LIST,(Serializable)posts);
+                startActivity(intent);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+
         }
     };
 
@@ -300,7 +347,6 @@ public class MainActivity extends AppCompatActivity
             return null;
         }
     }
-
 
 
 }
