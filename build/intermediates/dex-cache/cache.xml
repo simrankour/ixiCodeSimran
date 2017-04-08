@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="/home/ttnd/.android/build-cache/37ec8821b9db9ffc97a0c86b73fad2960e0241d9/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="44ee06abb66da30f5855e6bf54574e64cdcd982a">
+        <dex dex="/media/Simranjit/ad28c441-af57-436f-b20a-26ea5128fc5b/AndroidWorkspace/IxiCode/app/build/intermediates/pre-dexed/debug/classes_dda369d0dfe2b2dc287d70bfe3ed552e5358b162.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ttnd/.android/build-cache/19f45d2b4488c7dbc8b922301064bc1f2db10618/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="95519720620b553f63afc789beba9ad582807f7c">
+        <dex dex="/media/Simranjit/ad28c441-af57-436f-b20a-26ea5128fc5b/AndroidWorkspace/IxiCode/app/build/intermediates/pre-dexed/debug/classes_65225b80fb63d27b0a217b018e3c311c71630aed.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ttnd/.android/build-cache/fead3f623015a0c49013e93f46802b622efecae9/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="38789e20ace9ab7dbd00554bd2673ab424478d3b">
+        <dex dex="/media/Simranjit/ad28c441-af57-436f-b20a-26ea5128fc5b/AndroidWorkspace/IxiCode/app/build/intermediates/pre-dexed/debug/classes_c91c2729c261644b2cea8e7b51faddbaab66e918.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/ttnd/.android/build-cache/c3b69de3d1d733bf690b09c49f381d13a344bbcd/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d4cf6227dd6a2ceff0f7dcf0c324380b7abf2c28">
+        <dex dex="/media/Simranjit/ad28c441-af57-436f-b20a-26ea5128fc5b/AndroidWorkspace/IxiCode/app/build/intermediates/pre-dexed/debug/classes_5cbb883b0cd415d6973349b0d4c34d22a2898aed.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/media/Simranjit/ad28c441-af57-436f-b20a-26ea5128fc5b/sdk/extras/m2repository/com/android/support/constraint/constraint-layout-solver/1.0.2/constraint-layout-solver-1.0.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="b9cd8fc6bd15cb915735d34535db30ece0c44603">
+        <dex dex="/media/Simranjit/ad28c441-af57-436f-b20a-26ea5128fc5b/AndroidWorkspace/IxiCode/app/build/intermediates/pre-dexed/debug/constraint-layout-solver-1.0.2_aee846112aeb0511e0fd69454b2c542bb09921a4.jar" />
+    </item>
+
+</items>
