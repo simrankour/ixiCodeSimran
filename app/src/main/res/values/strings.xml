@@ -105,4 +105,6 @@
     <string name="title_item_list">Items</string>
     <string name="title_item_detail">Item Detail</string>
     <string name="app_emailid">simranjit.kour1@gmail.com</string>
+    <string name="google_maps_key">AIzaSyB-XN-g1mj0ARRwXrK-ttK5toE6iLlfI7Y</string>
+
 </resources>

@@ -5,10 +5,16 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+
+import com.simran.ixicode.models.Place;
+import com.simran.ixicode.utility.AppConstant;
+
+import java.io.Serializable;
 
 /**
  * An activity representing a single Item detail screen. This
@@ -29,8 +35,12 @@ public class ItemDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                Intent intent = new Intent(getApplicationContext(),MapActivity.class);
+                Place posts = ItemDetailFragment.getmItem();;
+                intent.putExtra(AppConstant.PLACE_ID,(Serializable)posts);
+                startActivity(intent);
             }
         });
 

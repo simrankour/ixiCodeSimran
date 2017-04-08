@@ -26,10 +26,14 @@ public class ItemDetailFragment extends Fragment {
      */
     public static final String ARG_ITEM_ID = "item_id";
 
+    public static Place getmItem() {
+        return mItem;
+    }
+
     /**
      * The dummy content this fragment is presenting.
      */
-    private Place mItem;
+    private static Place mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
