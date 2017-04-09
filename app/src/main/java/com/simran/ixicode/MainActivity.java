@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -29,8 +30,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.simran.ixicode.adapter.CityAutoCompleteAdapter;
 import com.simran.ixicode.customview.DelayAutoCompleteTextView;
+import com.simran.ixicode.models.BestResult;
 import com.simran.ixicode.models.City;
 import com.simran.ixicode.models.CityDetails;
 import com.simran.ixicode.models.Place;
@@ -70,6 +75,10 @@ public class MainActivity extends AppCompatActivity
     private DelayAutoCompleteTextView destCity;
     private String cityId = "503b2a98e4b032e338f14f01";
     private String searchCriteria = "Places To Visit";
+    private LinearLayout searchLayout;
+    private LinearLayout compareLayout;
+    private String originCityId;
+    private String destinationCityId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,13 +86,21 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        searchLayout = (LinearLayout) findViewById(R.id.searchLayout);
+        compareLayout = (LinearLayout) findViewById(R.id.compareLayout);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Searching your location...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                gsonBuilder.setDateFormat("M/d/yy hh:mm a");
+                gson = gsonBuilder.create();
+
+                requestQueue = Volley.newRequestQueue(getApplicationContext());
+                fetchCurrentCity();
             }
         });
 
@@ -96,13 +113,6 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-//        GsonBuilder gsonBuilder = new GsonBuilder();
-//        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
-//        gson = gsonBuilder.create();
-//
-//        requestQueue = Volley.newRequestQueue(getApplicationContext());
-//        fetchPosts();
-
         sourceCity = (DelayAutoCompleteTextView) findViewById(R.id.et_city_title);
         sourceCity.setThreshold(THRESHOLD);
         sourceCity.setAdapter(new CityAutoCompleteAdapter(this)); // 'this' is Activity instance
@@ -113,6 +123,7 @@ public class MainActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 City city = (City) adapterView.getItemAtPosition(position);
                 sourceCity.setText(city.getText());
+                originCityId = city.getXid();
             }
         });
 
@@ -128,6 +139,7 @@ public class MainActivity extends AppCompatActivity
                 City city = (City) adapterView.getItemAtPosition(position);
                 destCity.setText(city.getText());
                 cityId = city.getId();
+                destinationCityId = city.getXid();
             }
         });
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radio_group);
@@ -172,7 +184,7 @@ public class MainActivity extends AppCompatActivity
 
     private void fetchPosts() {
         String type = searchCriteria.replaceAll(" ", "+");
-        ENDPOINT = "http://build2.ixigo.com/api/v3/namedentities/city/" + cityId + "/categories?apiKey=ixicode!2$&type="+type+"&limit=5";
+        ENDPOINT = "http://build2.ixigo.com/api/v3/namedentities/city/" + cityId + "/categories?apiKey=ixicode!2$&type=" + type + "&limit=5";
         StringRequest request = new StringRequest(Request.Method.GET, ENDPOINT, onPostsLoaded, onPostsError);
         requestQueue.add(request);
     }
@@ -180,22 +192,22 @@ public class MainActivity extends AppCompatActivity
     private final Response.Listener<String> onPostsLoaded = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
-            Log.i("PostActivity", response);
+            Log.i("Simran PostActivity", response);
             JSONObject json = null;
             try {
                 json = new JSONObject(response);
                 JSONObject json_LL = json.getJSONObject("data");
-                String str_value = json_LL.getString("Places To Visit");
+                String str_value = json_LL.getString(searchCriteria);
                 Log.i("Simran", "" + str_value);
 
                 List<Place> posts = Arrays.asList(gson.fromJson(str_value, Place[].class));
 
-                Log.i("PostActivity", posts.size() + " posts loaded.");
+                Log.i("Simran PostActivity", posts.size() + " posts loaded.");
                 for (Place post : posts) {
-                    Log.i("PostActivity", post.getName() + ": " + post.getId());
+                    Log.i("Simran PostActivity", post.getName() + ": " + post.getId());
                 }
                 Intent intent = new Intent(getApplicationContext(), ItemListActivity.class);
-                intent.putExtra(AppConstant.PLACE_LIST,(Serializable)posts);
+                intent.putExtra(AppConstant.PLACE_LIST, (Serializable) posts);
                 startActivity(intent);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -207,7 +219,7 @@ public class MainActivity extends AppCompatActivity
     private final Response.ErrorListener onPostsError = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
-            Log.e("PostActivity", error.toString());
+            Log.e("Simran PostActivity", error.toString());
         }
     };
 
@@ -250,8 +262,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            compareLayout.setVisibility(View.GONE);
+            searchLayout.setVisibility(View.VISIBLE);
         } else if (id == R.id.nav_gallery) {
+            compareLayout.setVisibility(View.VISIBLE);
+            searchLayout.setVisibility(View.GONE);
 
         } else if (id == R.id.nav_slideshow) {
 
@@ -347,6 +362,79 @@ public class MainActivity extends AppCompatActivity
             return null;
         }
     }
+
+
+    private void fetchCurrentCity() {
+        ENDPOINT = "http://build2.ixigo.com/action/content/zeus/autocomplete?searchFor=tpAutoComplete&neCategories=City&query=gurgaon";
+        StringRequest request = new StringRequest(Request.Method.GET, ENDPOINT, onPostsLoadedCC, onPostsErrorCC);
+        requestQueue.add(request);
+    }
+
+    private final Response.Listener<String> onPostsLoadedCC = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            Log.i("Simran PostActivity", response);
+            List<City> posts = Arrays.asList(gson.fromJson(response, City[].class));
+            sourceCity.setText(posts.get(0).getText());
+            originCityId = posts.get(0).getXid();
+        }
+    };
+
+    private final Response.ErrorListener onPostsErrorCC = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Log.e("Simran PostActivity", error.toString());
+        }
+    };
+
+    public void onbtnBestDealClick(View view) {
+//        Log.i("Simran request", "hello");
+//        GsonBuilder gsonBuilder = new GsonBuilder();
+//        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
+//        gson = gsonBuilder.create();
+//
+//        requestQueue = Volley.newRequestQueue(getApplicationContext());
+//        fetchBestResult();
+
+        Intent intent = new Intent(getApplicationContext(), BestDealActivity.class);
+        intent.putExtra("STRING_ORIGIN", originCityId);
+        intent.putExtra("STRING_DESTINATION", destinationCityId);
+        startActivity(intent);
+    }
+
+    private void fetchBestResult() {
+        Log.i("Simran request", "hello2");
+        ENDPOINT = "http://build2.ixigo.com/api/v2/a2b/modes?apiKey=ixicode!2$&originCityId=" + originCityId + "&destinationCityId=" + destinationCityId;
+        Log.i("Simran request", ENDPOINT);
+        StringRequest request = new StringRequest(Request.Method.GET, ENDPOINT, onPostsLoadedBestResult, onPostsErrorBestResult);
+        requestQueue.add(request);
+    }
+
+    private final Response.Listener<String> onPostsLoadedBestResult = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            JsonElement jelement = new JsonParser().parse(response);
+            JsonObject jobject = jelement.getAsJsonObject();
+            JsonObject jsonObject = jobject.getAsJsonObject("data");
+
+            Log.i("Simran PostActivity", "" + jsonObject);
+            BestResult data = gson.fromJson(jsonObject.toString(), BestResult.class);
+            Log.i("Simran data", "" + data.toString());
+            Log.i("Simran best result", "" + data.getOriginName());
+
+            Intent intent = new Intent(getApplicationContext(), BestDealActivity.class);
+//            intent.putExtra(AppConstant.BEST_DEAL, data);
+            startActivity(intent);
+
+        }
+    };
+
+    private final Response.ErrorListener onPostsErrorBestResult = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Log.e("Simran PostActivity", error.toString());
+        }
+    };
 
 
 }

@@ -51,7 +51,7 @@ public class ItemListActivity extends AppCompatActivity {
 
         posts = (ArrayList<Place>) getIntent().getSerializableExtra(AppConstant.PLACE_LIST);
         if (posts != null) {
-            Log.i("ListActivity", posts.size() + " list loaded.");
+            Log.i("Simran ListActivity", posts.size() + " list loaded.");
         }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -109,7 +109,7 @@ public class ItemListActivity extends AppCompatActivity {
                     .with(getApplicationContext())
                     .load(mValues.get(position).getKeyImageUrl())
                     .asBitmap()
-                    .into(new SimpleTarget<Bitmap>(100,100) {
+                    .into(new SimpleTarget<Bitmap>(500,100) {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                             holder.mContentView.setImageBitmap(resource); // Possibly runOnUiThread()

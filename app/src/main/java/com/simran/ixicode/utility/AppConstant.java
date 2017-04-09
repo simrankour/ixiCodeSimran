@@ -5,7 +5,8 @@ package com.simran.ixicode.utility;
  */
 public class AppConstant {
     public static final boolean DEBUG = true;
-    public static final String PREF_LOGIN_FILE_NAME = "login_details";
+    public static final String PREF_LOGIN_FILE_NAME = "LOGIN_DETAILS    ";
     public static final String PLACE_LIST = "PLACE_LIST";
-    public static final String PLACE_ID = "Place_id";
+    public static final String PLACE_ID = "PLACE_ID";
+    public static final String BEST_DEAL = "BEST_DEAL";
 }

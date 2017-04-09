@@ -12,6 +12,15 @@ public class City {
     private String _id;
     private String state;
     private String country;
+    private String xid;
+
+    public String getXid() {
+        return xid;
+    }
+
+    public void setXid(String xid) {
+        this.xid = xid;
+    }
 
     public City() {
     }

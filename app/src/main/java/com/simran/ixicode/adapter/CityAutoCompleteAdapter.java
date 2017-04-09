@@ -121,13 +121,13 @@ public class CityAutoCompleteAdapter extends BaseAdapter implements Filterable {
     private final Response.Listener<String> onPostsLoaded = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
-            Log.i("PostActivity", response);
+            Log.i("Simran PostActivity", response);
 
              posts = Arrays.asList(gson.fromJson(response, City[].class));
 
-            Log.i("PostActivity", posts.size() + " posts loaded.");
+            Log.i("Simran PostActivity", posts.size() + " posts loaded.");
             for (City post : posts) {
-                Log.i("PostActivity", post.getText() + ": " + post.getId());
+                Log.i("Simran PostActivity", post.getText() + ": " + post.getId());
             }
         }
     };
@@ -135,7 +135,7 @@ public class CityAutoCompleteAdapter extends BaseAdapter implements Filterable {
     private final Response.ErrorListener onPostsError = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
-            Log.e("PostActivity", error.toString());
+            Log.e("Simran PostActivity", error.toString());
         }
     };
 
