@@ -109,7 +109,7 @@ public class ItemListActivity extends AppCompatActivity {
                     .with(getApplicationContext())
                     .load(mValues.get(position).getKeyImageUrl())
                     .asBitmap()
-                    .into(new SimpleTarget<Bitmap>(500,100) {
+                    .into(new SimpleTarget<Bitmap>(300,100) {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                             holder.mContentView.setImageBitmap(resource); // Possibly runOnUiThread()
